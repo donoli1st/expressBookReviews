@@ -7,6 +7,10 @@ let users = [
     {
         "username": "henrik",
         "password": "theGreat"
+    },
+    {
+        "username": "alice",
+        "password": "wonderland"
     }
 ];
 
@@ -52,8 +56,19 @@ regd_users.post("/login", (req, res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-    //Write your code here
-    return res.status(300).json({ message: "Yet to be implemented" });
+    let isbn = req.params.isbn;
+    let review = req.body.review;
+    let username = req.user.data;
+
+    if (books[isbn]) {
+        books[isbn].reviews[username] = review;
+        return res.status(200).json({
+            message: `Review for ISBN:${isbn} user:${username} added/updated text: "${review}" successfully.`,
+            book: books[isbn]
+        });
+    } else {
+        return res.status(404).json({message: "Book not found."});
+    }
 });
 
 module.exports.authenticated = regd_users;

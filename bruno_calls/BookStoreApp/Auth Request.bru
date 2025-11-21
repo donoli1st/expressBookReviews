@@ -1,0 +1,26 @@
+meta {
+  name: Auth Request
+  type: http
+  seq: 8
+}
+
+put {
+  url: 127.0.0.1:5000/customer/auth/review/:isbn
+  body: json
+  auth: inherit
+}
+
+params:path {
+  isbn: 1
+}
+
+body:json {
+  {
+    "review":"This is a great book!"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
