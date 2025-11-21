@@ -46,11 +46,15 @@ public_users.get('/isbn/:isbn', async function (req, res) {
 });
 
 // Get book details based on author
-public_users.get('/author/:author', function (req, res) {
+public_users.get('/author/:author', async function (req, res) {
     let author = req.params.author;
-    let filteredBooks = Object.keys(books)
-                       .filter(bookIndex => books[bookIndex].author === author)
-                       .map(bookIndex => books[bookIndex]);
+
+    let filteredBooks = await new Promise((resolve,reject) => {
+        let booksByAuthor = Object.keys(books)
+                           .filter(bookIndex => books[bookIndex].author === author)
+                           .map(bookIndex => books[bookIndex]);
+        resolve(booksByAuthor);
+    })
     res.send(JSON.stringify(filteredBooks, null, 4));
 });
 
