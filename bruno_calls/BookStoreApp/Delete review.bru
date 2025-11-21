@@ -1,23 +1,17 @@
 meta {
-  name: Auth Request
+  name: Delete review
   type: http
-  seq: 8
+  seq: 9
 }
 
-put {
+delete {
   url: 127.0.0.1:5000/customer/auth/review/:isbn
-  body: json
+  body: none
   auth: inherit
 }
 
 params:path {
   isbn: 1
-}
-
-body:json {
-  {
-    "review":"Was not impressed by this book"
-  }
 }
 
 settings {
