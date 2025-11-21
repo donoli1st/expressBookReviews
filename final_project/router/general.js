@@ -36,10 +36,13 @@ public_users.get('/', async function (req, res) {
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn', function (req, res) {
+public_users.get('/isbn/:isbn', async function (req, res) {
     
     let isbn = req.params.isbn;
-    res.send(JSON.stringify(books[isbn], null, 4));
+    let bookDetails = await new Promise((resolve,reject) => {
+        resolve(books[isbn]);
+    })
+    res.send(JSON.stringify(bookDetails, null, 4));
 });
 
 // Get book details based on author
