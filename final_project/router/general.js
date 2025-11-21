@@ -59,11 +59,14 @@ public_users.get('/author/:author', async function (req, res) {
 });
 
 // Get all books based on title
-public_users.get('/title/:title', function (req, res) {
+public_users.get('/title/:title', async function (req, res) {
     let title = req.params.title;
-    let filteredBooks = Object.keys(books)
-                       .filter(bookIndex => books[bookIndex].title === title)
-                       .map(bookIndex => books[bookIndex]);
+    let filteredBooks = await new Promise((resolve,reject) => {
+        let booksByTitle = Object.keys(books)
+                           .filter(bookIndex => books[bookIndex].title === title)
+                           .map(bookIndex => books[bookIndex]);
+        resolve(booksByTitle);
+    })
     res.send(JSON.stringify(filteredBooks, null, 4));
 });
 
