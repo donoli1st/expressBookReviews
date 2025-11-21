@@ -1,0 +1,20 @@
+meta {
+  name: GET Books by title
+  type: http
+  seq: 4
+}
+
+get {
+  url: 127.0.0.1:5000/title/:title
+  body: none
+  auth: inherit
+}
+
+params:path {
+  title: The Epic Of Gilgamesh
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

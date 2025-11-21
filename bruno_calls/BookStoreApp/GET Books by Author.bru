@@ -1,0 +1,20 @@
+meta {
+  name: GET Books by Author
+  type: http
+  seq: 3
+}
+
+get {
+  url: 127.0.0.1:5000/author/:author
+  body: none
+  auth: inherit
+}
+
+params:path {
+  author: Unknown
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

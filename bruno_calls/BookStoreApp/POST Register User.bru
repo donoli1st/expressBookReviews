@@ -1,0 +1,23 @@
+meta {
+  name: POST Register User
+  type: http
+  seq: 6
+}
+
+post {
+  url: 127.0.0.1:5000/register
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "username":"henrik",
+    "password":"theGreat"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
