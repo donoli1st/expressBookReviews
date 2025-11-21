@@ -1,0 +1,23 @@
+meta {
+  name: POST Login
+  type: http
+  seq: 7
+}
+
+post {
+  url: 127.0.0.1:5000/customer/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username":"henrik",
+    "password":"theGreat"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
