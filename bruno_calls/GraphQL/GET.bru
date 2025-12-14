@@ -1,0 +1,25 @@
+meta {
+  name: GET
+  type: http
+  seq: 1
+}
+
+get {
+  url: https://donoli-8080.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/graphql
+  body: json
+  auth: inherit
+}
+
+body:sparql {
+  {
+      cities {
+          city
+          state
+          }
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

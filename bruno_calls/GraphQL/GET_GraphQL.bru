@@ -1,0 +1,25 @@
+meta {
+  name: GET_GraphQL
+  type: graphql
+  seq: 2
+}
+
+get {
+  url: https://donoli-8080.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/graphql
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  {
+      cities(state:"Ohio") {
+          city
+      		state
+      }
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
