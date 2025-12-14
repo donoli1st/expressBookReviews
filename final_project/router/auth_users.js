@@ -1,8 +1,13 @@
+// Routes that handle authenticated customer functionality (login and reviews)
+// This router is mounted under the "/customer" path in index.js
+
 const express = require('express');
 const jwt = require('jsonwebtoken');
-let books = require("./booksdb.js");
-const regd_users = express.Router();
+let books = require("./booksdb.js");              // In-memory books database with reviews
+const regd_users = express.Router();              // Router instance for registered users
 
+// In-memory list of registered users
+// In a real app this would be stored in a database
 let users = [
     {
         "username": "henrik",
@@ -14,8 +19,12 @@ let users = [
     }
 ];
 
+// Secret used to sign and verify JWT tokens for authenticated users
+// Must be the same value as in index.js
 let token_secret = 'hyperSecretKey';
 
+// Check if a username already exists in the users array
+// returns boolean
 const isValid = (username) => { //returns boolean
     let userswithsamename = users.filter((user) => {
         return user.username === username;
@@ -23,6 +32,8 @@ const isValid = (username) => { //returns boolean
     return userswithsamename.length > 0;
 }
 
+// Verify that the provided username and password match a registered user
+// returns boolean
 const authenticatedUser = (username, password) => { //returns boolean
     let validusers = users.filter((user) => {
         return (user.username === username && user.password === password);
@@ -30,7 +41,12 @@ const authenticatedUser = (username, password) => { //returns boolean
     return validusers.length > 0;
 }
 
-//only registered users can login
+// Login endpoint for registered users
+// - Expects { username, password } in the request body
+// - If credentials are valid, creates a JWT and stores it
+//   in the session under req.session.authorization.accessToken
+// - The token is later validated by the middleware in index.js
+// Only registered users can login
 regd_users.post("/login", (req, res) => {
     
     let username = req.body.username;
@@ -41,10 +57,12 @@ regd_users.post("/login", (req, res) => {
     }
 
     if (authenticatedUser(username, password)) {
+        // Create a JWT that encodes the username in its payload
         let accessToken = jwt.sign({
             data: username
-        }, token_secret, { expiresIn: 60 * 60 });
+        }, token_secret, { expiresIn: 60 * 60 }); // Token valid for 1 hour
 
+        // Store token in session so it can be used by auth middleware
         req.session.authorization = {
             accessToken
         }
@@ -54,7 +72,10 @@ regd_users.post("/login", (req, res) => {
     }
 });
 
-// Add a book review
+// Add or update a book review for the currently authenticated user
+// - Route: PUT /customer/auth/review/:isbn
+// - Requires a valid JWT (middleware in index.js populates req.user)
+// - Uses req.user.data (the username from the token) as the review owner
 regd_users.put("/auth/review/:isbn", (req, res) => {
     let isbn = req.params.isbn;
     let review = req.body.review;
@@ -71,7 +92,9 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     }
 });
 
-// Delete a book review
+// Delete the review of the currently authenticated user for a given book
+// - Route: DELETE /customer/auth/review/:isbn
+// - Only deletes the review that belongs to req.user.data
 regd_users.delete("/auth/review/:isbn", (req, res) => {
     let isbn = req.params.isbn;
     let username = req.user.data;
@@ -91,6 +114,7 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
     }
 });
 
+// Export router and helper functions so they can be used in index.js
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
 module.exports.users = users;

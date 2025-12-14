@@ -22,11 +22,21 @@ let token_secret = 'hyperSecretKey';
 
 // Configure session middleware only for routes under /customer
 // This stores a session object on req.session, which we use to keep the JWT
+// Security-related options:
+// - SESSION_SECRET is read from the environment when available
+// - httpOnly prevents JavaScript from reading the cookie (mitigates XSS)
+// - sameSite:'lax' helps protect against CSRF in most navigation scenarios
+// - secure:true only sends the cookie over HTTPS in production
 app.use("/customer", session(
     {
-        secret: "fingerprint_customer", // Key used to sign the session ID cookie
-        resave: true,                    // Always save the session back to the store
-        saveUninitialized: true          // Save new sessions that have not been modified
+        secret: process.env.SESSION_SECRET || "fingerprint_customer", // Session secret
+        resave: false,                    // Do not resave unmodified sessions
+        saveUninitialized: false,         // Do not create sessions until something is stored
+        cookie: {
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: process.env.NODE_ENV === 'production'
+        }
     }
 ));
 
